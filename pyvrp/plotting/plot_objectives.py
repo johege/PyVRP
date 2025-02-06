@@ -1,11 +1,13 @@
 import matplotlib.pyplot as plt
 import numpy as np
 
-from pyvrp.Result import Result
+# from pyvrp.Result import Result
+from pyvrp.Statistics import Statistics
 
 
 def plot_objectives(
-    result: Result,
+    # result: Result,
+    stats: Statistics
     num_to_skip: int | None = None,
     ax: plt.Axes | None = None,
     ylim_adjust: tuple[float, float] = (0.95, 1.15),
@@ -32,28 +34,28 @@ def plot_objectives(
         _, ax = plt.subplots()
 
     if num_to_skip is None:
-        num_to_skip = int(0.05 * result.num_iterations)
+        num_to_skip = int(0.05 * stats.num_iterations)
 
     def _plot(x, y, *args, **kwargs):
         ax.plot(x[num_to_skip:], y[num_to_skip:], *args, **kwargs)
 
-    x = 1 + np.arange(result.num_iterations)
-    y = [d.best_cost for d in result.stats.infeas_stats]
+    x = 1 + np.arange(stats.num_iterations)
+    y = [d.best_cost for d in stats.infeas_stats]
     _plot(x, y, label="Infeas. best", c="tab:red")
 
-    y = [d.avg_cost for d in result.stats.infeas_stats]
+    y = [d.avg_cost for d in stats.infeas_stats]
     _plot(x, y, label="Infeas. avg.", c="tab:red", alpha=0.3, ls="--")
 
-    y = [d.best_cost for d in result.stats.feas_stats]
+    y = [d.best_cost for d in stats.feas_stats]
     _plot(x, y, label="Feas. best", c="tab:green")
 
-    y = [d.avg_cost for d in result.stats.feas_stats]
+    y = [d.avg_cost for d in stats.feas_stats]
     _plot(x, y, label="Feas. avg.", c="tab:green", alpha=0.3, ls="--")
 
     # Use best-found solution to set reasonable y-limits, if available.
-    if result.is_feasible():
-        best_cost = result.cost()
-        ax.set_ylim(best_cost * ylim_adjust[0], best_cost * ylim_adjust[1])
+    # if result.is_feasible():
+    #     best_cost = result.cost()
+    #     ax.set_ylim(best_cost * ylim_adjust[0], best_cost * ylim_adjust[1])
 
     ax.set_title("Objectives")
     ax.set_xlabel("Iteration (#)")
