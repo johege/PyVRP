@@ -1,6 +1,7 @@
 from importlib.metadata import version
 
 from pyvrp._pyvrp import ProblemData
+from pyvrp.plotting.plot_objectives import plot_objectives
 
 from .Result import Result
 from .Statistics import Statistics
@@ -78,6 +79,7 @@ class ProgressPrinter:
             infeas_best=round(infeas.best_cost) if infeas.size else "-",
         )
         print(msg)
+        plot_objectives(stats)
 
         if feas.best_cost < self._best_cost:
             self._best_cost = feas.best_cost
